@@ -1,5 +1,5 @@
 .vscode
-*.csv
+# *.csv
 *.npy
 __pycache__
 *.zip
