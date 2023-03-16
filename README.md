@@ -34,4 +34,7 @@ RCCS applies CCS multiple times, with the contraint that iteration n should find
 
 I wanted to make the diff still relatively small, so each iteration of RCCS is a separate experiment, which uses the parameters of the probes found by previous ones. To run 20 iteration of RCCS, pass RCCS0, ..., RCCS19 to `--method_list` (it should start by RCCS0). Stats will be saved for each iterations as a separate experiment, and the concatenation of probes' parameters will be saved as if you had run a method named `RCCS`.
 
+## Michael edits 2023-03-16 04:12
+If not using an Apple Silicon GPU, change the .to("mps") (in utils_generation/generation.py and utils_generation/load_utils.py) to .to("cuda") (if using an NVIDIA GPU) or just skip it to keep it on CPU.
 
+I removed the story-cloze dataset because it was giving me errors when trying to run generation.

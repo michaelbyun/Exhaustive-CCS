@@ -80,7 +80,7 @@ def calZeroAndHiddenStates(model, tokenizer, frame_dict, args):
                         
                         logits_list.append(toNP(getLogits(logits, logit_token, mdl_name)))
 
-                # Essemble and save
+                # Assemble and save
                 if args.cal_zeroshot:
                     # add to the records
                     labels = getDataPoint(
@@ -193,7 +193,7 @@ def getStatesToken(hidden_state, method):
 
 
 def getToken(s, tokenizer):
-    return tokenizer(s, return_tensors='pt').input_ids.to("cuda")
+    return tokenizer(s, return_tensors='pt').input_ids.to("mps")
 
 
 def getLogProbs(logits, ans_token, mdl_name):

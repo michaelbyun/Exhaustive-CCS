@@ -1,9 +1,15 @@
+sentencepiece
 matplotlib==3.1.2
 numpy==1.17.4
-pandas==0.25.3
+# pandas==0.25.3
+pandas==1.0.0
 promptsource==0.2.3
 scikit_learn==1.2.1
 seaborn==0.11.2
-torch==1.11.0
+torch#==1.11.0
 transformers==4.21.3
 umap==0.1.1
+
+# CONDA_SUBDIR=osx-64 conda create -n myenv_x86 python=3.9
+# conda activate myenv_x86
+# conda config --env --set subdir osx-64

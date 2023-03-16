@@ -267,7 +267,7 @@ class MyPrompts():
 
         if set_name in ["ag-news", "dbpedia-14"]:
             self.nomodule = True
-            self.moudle = None
+            self.module = None
         else:
             self.nomodule = False
             from utils_generation.load_utils import getLoadName
@@ -393,7 +393,8 @@ def concatAnswer(question, ans, mdl_name, confusion):
     if ans == "":  # null one, don't do anything
         return question
 
-    ans += confusion_suffix[suffix]
+    if suffix != "":
+        ans += confusion_suffix[suffix]
 
     # for bert model, should add [SEP]
     if 'deberta' in mdl_name:
@@ -423,6 +424,7 @@ def constructPrompt(set_name, frame, prompt_idx, mdl_name, tokenizer, max_num, c
         "0":        [],
         "1":        [],
         "label":    [],
+        # "masked":   [],
         "selection": [],
     }
 
@@ -463,6 +465,8 @@ def constructPrompt(set_name, frame, prompt_idx, mdl_name, tokenizer, max_num, c
         for i in range(2):
             result[str(i)].append(concat_data_list[i])
         result["label"].append(label)
+
+        # result["masked"].append(concatAnswer(question, "[MASK]", mdl_name, confusion))
 
         result["selection"].append(ans_lis)
 

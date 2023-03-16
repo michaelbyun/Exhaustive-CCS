@@ -1,5 +1,5 @@
 {"dataset_list" : ["imdb", "amazon-polarity", "ag-news", "dbpedia-14",
-                "copa",  "rte",  "boolq",  "qnli",  "piqa",  "story-cloze"],
+                "copa",  "rte",  "boolq",  "qnli",  "piqa"],
 "registered_models" : [
     "t5-11b",
     "unifiedqa-t5-11b", 

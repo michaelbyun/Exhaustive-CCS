@@ -1,8 +1,8 @@
 #!/bin/bash
 
 methods="CCS LR Random CCS-md LR-md Random-md"
-uqa_good_ds="imdb amazon-polarity ag-news dbpedia-14 copa boolq story-cloze"
-gptj_good_ds="imdb amazon-polarity ag-news dbpedia-14"
+uqa_good_ds="imdb amazon-polarity ag-news" # dbpedia-14 copa boolq story-cloze"
+gptj_good_ds="imdb amazon-polarity ag-news" # dbpedia-14"
 
 model_names=(unifiedqa-t5-11b gpt-j-6B)
 model_to_ds=(uqa_good_ds gptj_good_ds)
