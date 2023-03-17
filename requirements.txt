@@ -9,6 +9,7 @@ seaborn==0.11.2
 torch#==1.11.0
 transformers==4.21.3
 umap==0.1.1
+accelerate
 
 # CONDA_SUBDIR=osx-64 conda create -n myenv_x86 python=3.9
 # conda activate myenv_x86

@@ -295,7 +295,7 @@ class ConsistencyMethod(object):
 
     # seems 50, 20 can significantly reduce overfitting than 1000, 10
     # switch back to 1000 + 10
-    def fit(self, data: list, label, nepochs=1000, ntries=10, lr=1e-2, init_theta=None, device="cuda"):
+    def fit(self, data: list, label, nepochs=1000, ntries=10, lr=1e-2, init_theta=None, device="mps"):
         """
         Does ntries attempts at training, with different random initializations
         """
@@ -372,7 +372,7 @@ class myClassifyModel(LogisticRegression):
         assert self.method == "BSS", NotImplementedError("`get_train_loss` supported only when method is `BSS`.")
         return self.loss
 
-    def fit(self, data, label, times = 20, use_scheduler = False, weights = None, lr = 1e-1, epochs = 20, device = "cuda"):
+    def fit(self, data, label, times = 20, use_scheduler = False, weights = None, lr = 1e-1, epochs = 20, device = "mps"):
         if self.method == "LR":
             super().fit(data, label)
             if self.print_more:

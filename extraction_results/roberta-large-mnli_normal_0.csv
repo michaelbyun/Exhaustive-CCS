@@ -1,0 +1,13 @@
+model,prefix,method,prompt_level,train,test,accuracy,std,cons_loss,layer,location,loss,sim_loss
+roberta-large-mnli,normal,CCS,all,all,imdb,0.8882692307692307,0.022304376411381506,0.039739503187520335,-1.0,encoder,0.09542026160392583,0.055680758416405504
+roberta-large-mnli,normal,CCS,all,imdb,imdb,0.8884615384615384,0.022543514791877457,0.0399841862743113,-1.0,encoder,0.09447067662509594,0.054486490350784636
+roberta-large-mnli,normal,LR,all,all,imdb,0.928076923076923,0.01383813870577386,,-1.0,encoder,,
+roberta-large-mnli,normal,LR,all,imdb,imdb,0.928076923076923,0.01383813870577386,,-1.0,encoder,,
+roberta-large-mnli,normal,Random,all,all,imdb,0.7101923076923077,0.10572761419027135,,-1.0,encoder,,
+roberta-large-mnli,normal,Random,all,imdb,imdb,0.7728846153846154,0.10610610687966911,,-1.0,encoder,,
+roberta-large-mnli,normal,CCS-md,all,all,imdb,0.5384615384615384,0.015978906213723828,0.07986894321103614,-1.0,encoder,0.1478520116954049,0.06798306848436873
+roberta-large-mnli,normal,CCS-md,all,imdb,imdb,0.5355769230769231,0.015570986523074707,0.07883825683990639,-1.0,encoder,0.14706608569446428,0.06822782885455791
+roberta-large-mnli,normal,LR-md,all,all,imdb,0.5192307692307693,0.012911854101226564,,-1.0,encoder,,
+roberta-large-mnli,normal,LR-md,all,imdb,imdb,0.5192307692307693,0.012911854101226564,,-1.0,encoder,,
+roberta-large-mnli,normal,Random-md,all,all,imdb,0.5153846153846153,0.010599625984246679,,-1.0,encoder,,
+roberta-large-mnli,normal,Random-md,all,imdb,imdb,0.5325,0.024475262236357383,,-1.0,encoder,,

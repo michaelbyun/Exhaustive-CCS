@@ -3,6 +3,8 @@ import numpy as np
 import functools
 from utils_generation.save_utils import saveArray, saveRecords
 import time
+import os
+import pandas as pd
 
 
 def calZeroAndHiddenStates(model, tokenizer, frame_dict, args):
@@ -87,11 +89,31 @@ def calZeroAndHiddenStates(model, tokenizer, frame_dict, args):
                         frame, [0, len(frame)], "label").to_list()
                     record["log_probs"] = sum(
                         [int(w[0] < w[1]) == l for w, l in zip(log_probs_list, labels)]) / len(frame)
+                            
                     record["calibrated"] = getCalibrated(log_probs_list, labels)
 
                     if args.print_more:
                         print(
                             "Finish calculating the zero-shot accuracy for {} data in {}.".format(len(frame), key))
+                        
+                    # save all log probs
+                    f = os.path.join(args.save_base_dir, 
+                                        f"{mdl_name}_{key}_{args.prefix}_{args.tag}_log_probs.csv"
+                                     )
+                    log_probs_df = pd.DataFrame(columns=["log_prob_0", "log_prob_1", "higher_prob", "label", "calibrated"])
+                    
+                    for w, l in zip(log_probs_list, labels):
+                        log_probs_df = log_probs_df.append({
+                            "log_prob_0": w[0],
+                            "log_prob_1": w[1],
+                            "higher_prob": int(w[0] < w[1]),
+                            "label": l,
+                            "calibrated": int(int(w[0] < w[1]) == l)
+                        }, ignore_index=True)
+
+                    log_probs_df.to_csv(f, index = False)
+
+                    print("Successfully saved {} items to {}".format(len(log_probs_list), f))
                 
                 # save logits
                 if args.cal_logits:
