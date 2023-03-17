@@ -53,8 +53,9 @@ def loadModel(mdl_name, cache_dir, parallelize):
         parallelize == True))
     if parallelize:
         model.parallelize()
-    # else:
-    #     model = model.to("cuda")
+    else:
+        print("using MPS")
+        model = model.to("mps")
     
 
     print("{} loaded.".format(mdl_name))

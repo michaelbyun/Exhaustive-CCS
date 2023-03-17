@@ -1,12 +1,19 @@
 #!/bin/bash
 
-methods="CCS LR Random CCS-md LR-md Random-md"
-uqa_good_ds="imdb amazon-polarity ag-news" # dbpedia-14 copa boolq story-cloze"
-gptj_good_ds="imdb amazon-polarity ag-news" # dbpedia-14"
+python generation_main.py --model roberta-large-mnli --datasets ag-news dbpedia-14 --cal_zeroshot 1 --swipe --states_index -1 -3 -5 -7 -9
 
-model_names=(unifiedqa-t5-11b gpt-j-6B)
-model_to_ds=(uqa_good_ds gptj_good_ds)
-model_to_short=(uqa gptj)
+
+methods="CCS LR Random CCS-md LR-md Random-md"
+# uqa_good_ds="imdb amazon-polarity ag-news" # dbpedia-14 copa boolq story-cloze"
+# gptj_good_ds="imdb amazon-polarity ag-news" # dbpedia-14"
+roberta_good_ds="imdb amazon-polarity ag-news dbpedia-14" # not actually sure if these are good
+
+# model_names=(unifiedqa-t5-11b gpt-j-6B)
+# model_to_ds=(uqa_good_ds gptj_good_ds)
+# model_to_short=(uqa gptj)
+model_names=(roberta-large-mnli)
+model_to_ds=(roberta_good_ds)
+model_to_short=(roberta)
 
 test_on_trains=("" "--test_on_train")
 test_on_train_extensions=("" "/test_on_train")
@@ -74,3 +81,6 @@ for i_model in 1 0; do
         python extraction_main.py --model $model --datasets $ds --method_list $RCCS_STRING --seed $seed --save_dir extraction_results/rccs $save_states
     done
 done
+
+
+python generation_main.py --model gpt-neo-2.7B --datasets dbpedia-14 --cal_zeroshot 1 --swipe --states_index -1 -3 -5 -7 -9

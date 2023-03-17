@@ -42,6 +42,7 @@ def calZeroAndHiddenStates(model, tokenizer, frame_dict, args):
                 logits_list = []
 
                 # Loop over data points
+                # print("Start calculating logits for {}...".format(key))
                 for idx in range(len(frame)):
                     if "gpt" in mdl_name or "bert" in mdl_name:
                         ans_list = getDataPoint(frame, idx, "selection")
@@ -50,7 +51,9 @@ def calZeroAndHiddenStates(model, tokenizer, frame_dict, args):
                         # get the input_ids
                         ids_paired = [tokenize(getDataPoint(
                             frame, idx, w)) for w in ["0", "1"]]
+                        # print("running forward pass...")
                         logits = [model(w)["logits"] for w in ids_paired]
+                        # print("finished forward pass...")
 
                         logit_token = ids_paired
 

@@ -424,7 +424,6 @@ def constructPrompt(set_name, frame, prompt_idx, mdl_name, tokenizer, max_num, c
         "0":        [],
         "1":        [],
         "label":    [],
-        # "masked":   [],
         "selection": [],
     }
 
@@ -465,8 +464,6 @@ def constructPrompt(set_name, frame, prompt_idx, mdl_name, tokenizer, max_num, c
         for i in range(2):
             result[str(i)].append(concat_data_list[i])
         result["label"].append(label)
-
-        # result["masked"].append(concatAnswer(question, "[MASK]", mdl_name, confusion))
 
         result["selection"].append(ans_lis)
 
