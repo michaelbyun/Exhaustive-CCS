@@ -19,8 +19,6 @@ from datasets import load_dataset
 from utils_generation.construct_prompts import constructPrompt, MyPrompts
 from utils_generation.save_utils import saveFrame, getDir
 import torch
-from accelerate import Accelerator
-accelerator = Accelerator()
 
 
 def loadModel(mdl_name, cache_dir, parallelize):
@@ -28,9 +26,7 @@ def loadModel(mdl_name, cache_dir, parallelize):
     print("loading model and tokenizer. model name = {}, cache_dir = {}".format(
         mdl_name, cache_dir))
     if mdl_name in ["gpt-neo-2.7B", "gpt-j-6B"]:
-        model = accelerator.prepare(
-            AutoModelForCausalLM.from_pretrained("EleutherAI/{}".format(mdl_name), revision="float16", torch_dtype=torch.float16)
-        )
+        model = AutoModelForCausalLM.from_pretrained("EleutherAI/{}".format(mdl_name))
         tokenizer = AutoTokenizer.from_pretrained("EleutherAI/{}".format(mdl_name))
     elif mdl_name in ["gpt2", "gpt2-medium", "gpt2-large", "gpt2-xl"]:
         model = GPT2LMHeadModel.from_pretrained(mdl_name)
@@ -59,9 +55,7 @@ def loadModel(mdl_name, cache_dir, parallelize):
         model.parallelize()
     # else:
     #     model = model.to("cuda")
-    else:
-        print("using MPS")
-        model = model.to("mps")
+    
 
     print("{} loaded.".format(mdl_name))
     

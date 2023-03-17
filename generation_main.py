@@ -1,7 +1,9 @@
 import time
 from utils_generation.parser import getArgs
 from utils_generation.load_utils import loadModel, loadDatasets
-from utils_generation.generation import calZeroAndHiddenStates
+from utils_generation.generation import 
+
+from accelerate import Accelerator
 
 if __name__ == "__main__":
     print("---------------- Program Begin ----------------")
@@ -10,10 +12,11 @@ if __name__ == "__main__":
 
     # get args
     args = getArgs()
-
+    accelerator = Accelerator(fp16=True) 
     # load models, stored in GPU
     model, tokenizer = loadModel(
         mdl_name=args.model, cache_dir=args.cache_dir, parallelize=args.parallelize)
+    model = accelerator.prepare(model)
 
     prefix_list = args.prefix
     for prefix in prefix_list:

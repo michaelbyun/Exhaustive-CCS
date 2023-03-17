@@ -6,7 +6,6 @@ import time
 import os
 import pandas as pd
 
-
 def calZeroAndHiddenStates(model, tokenizer, frame_dict, args):
     '''
         This function will calculate the zeroshot accuracy for each dataset and properly store
