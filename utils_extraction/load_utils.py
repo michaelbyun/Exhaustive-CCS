@@ -16,11 +16,11 @@ models_layer_num = global_dict["models_layer_num"]
 
 
 load_dir = "./generation_results"
-print("------ Func: set_load_dir ------\n\
-## Input = (path) ##\n\
-    path: set the dir that loads hidden states to path.\n\
-[ATTENTION]: Only load the first 4 prompts for speed.\n\
-")
+# print("------ Func: set_load_dir ------\n\
+# ## Input = (path) ##\n\
+#     path: set the dir that loads hidden states to path.\n\
+# [ATTENTION]: Only load the first 4 prompts for speed.\n\
+# ")
 def set_load_dir(path):
     global load_dir
     load_dir = path
@@ -87,23 +87,23 @@ def getPermutation(data_list, rate = 0.6):
     return [permutation[: int(length * rate)], permutation[int(length * rate):]]
 
 
-print("------ Func: getDic ------\n\
-## Input = (mdl_name, dataset_list, prefix = \"normal\", location=\"encoder\", layer=-1, scale = True, demean = True, mode = \"minus\", verbose = True) ##\n\
-    mdl_name: name of the model\n\
-    dataset_list: list of all datasets\n\
-    prefix: the prefix used for the hidden states\n\
-    location: Either 'encoder' or 'decoder'. Determine which hidden states to load.\n\
-    layer: An index representing which layer in `location` should we load the hidden state from.\n\
-    prompt_dict: dict of prompts to consider. Default is taking all prompts (empty dict). Key is the set name and value is an index list. Only return hiiden states from corresponding prompts.\n\
-    data_num: population of the dataset. Default is 1000, and it depends on generation process.\n\
-    scale: whether to rescale the whole dataset\n\
-    demean: whether to subtract the mean\n\
-    mode: how to generate hidden states from h and h'\n\
-    verbose: Whether to print more\n\
-## Output = [data_dict, permutation_dict] ##\n\
-    data_dict: a dict with key equals to set name, and value is a list. Each element in the list is a tuple (state, label). state has shape (#data * #dim), and label has shape (#data).\n\
-    permutation_dict: [train_idx, test_idx], where train_idx is the subset of [#data] that corresponds to the training set, and test_idx is the subset that corresponds to the test set.\n\
-")
+# print("------ Func: getDic ------\n\
+# ## Input = (mdl_name, dataset_list, prefix = \"normal\", location=\"encoder\", layer=-1, scale = True, demean = True, mode = \"minus\", verbose = True) ##\n\
+#     mdl_name: name of the model\n\
+#     dataset_list: list of all datasets\n\
+#     prefix: the prefix used for the hidden states\n\
+#     location: Either 'encoder' or 'decoder'. Determine which hidden states to load.\n\
+#     layer: An index representing which layer in `location` should we load the hidden state from.\n\
+#     prompt_dict: dict of prompts to consider. Default is taking all prompts (empty dict). Key is the set name and value is an index list. Only return hiiden states from corresponding prompts.\n\
+#     data_num: population of the dataset. Default is 1000, and it depends on generation process.\n\
+#     scale: whether to rescale the whole dataset\n\
+#     demean: whether to subtract the mean\n\
+#     mode: how to generate hidden states from h and h'\n\
+#     verbose: Whether to print more\n\
+# ## Output = [data_dict, permutation_dict] ##\n\
+#     data_dict: a dict with key equals to set name, and value is a list. Each element in the list is a tuple (state, label). state has shape (#data * #dim), and label has shape (#data).\n\
+#     permutation_dict: [train_idx, test_idx], where train_idx is the subset of [#data] that corresponds to the training set, and test_idx is the subset that corresponds to the test set.\n\
+# ")
 def getDic(mdl_name, dataset_list, prefix = "normal", location="auto", layer=-1, prompt_dict = None, data_num = 1000, scale = True, demean = True, mode = "minus", verbose = True):
     global load_dir
     if location == "auto":
@@ -116,17 +116,17 @@ def getDic(mdl_name, dataset_list, prefix = "normal", location="auto", layer=-1,
     permutation_dict = {set_name: getPermutation(data_dict[set_name]) for set_name in dataset_list}
     return data_dict, permutation_dict
 
-print("------ Func: get_zeros_acc ------\n\
-## Input = csv_name, mdl_name, dataset_list, prefix, prompt_dict = None, avg = False\n\
-    csv_name: The name of csv we get accuracy from.\n\
-    mdl_name: The name of the model.\n\
-    dataset_list: List of dataset you want the accuracy from.\n\
-    prefix: The name of prefix.\n\
-    prompt_dict: Same as in getDir(). You can specify which prompt to get using this variable. Default is None, i.e. get all prompts.\n\
-    avg: Whether to average upon return. If True, will return a numbers, otherwise a dict with key from dataset_list and values being a list of accuracy.\n\
-## Output = number / dict, depending on `avg`\n\
-"
-)
+# print("------ Func: get_zeros_acc ------\n\
+# ## Input = csv_name, mdl_name, dataset_list, prefix, prompt_dict = None, avg = False\n\
+#     csv_name: The name of csv we get accuracy from.\n\
+#     mdl_name: The name of the model.\n\
+#     dataset_list: List of dataset you want the accuracy from.\n\
+#     prefix: The name of prefix.\n\
+#     prompt_dict: Same as in getDir(). You can specify which prompt to get using this variable. Default is None, i.e. get all prompts.\n\
+#     avg: Whether to average upon return. If True, will return a numbers, otherwise a dict with key from dataset_list and values being a list of accuracy.\n\
+# ## Output = number / dict, depending on `avg`\n\
+# "
+# )
 def get_zeros_acc(csv_name, mdl_name, dataset_list, prefix, prompt_dict = None, avg = False):
     zeros = pd.read_csv(os.path.join(load_dir, csv_name + ".csv"))
     zeros.dropna(subset=["calibrated"], inplace=True)

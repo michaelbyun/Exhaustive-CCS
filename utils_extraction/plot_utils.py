@@ -4,16 +4,16 @@ import pandas as pd
 sns.set_theme()
 
 
-print("\
------- Func: scatter_data ------\n\
-## Input = (data, label, n_con, name, idx) ##\n\
-    data: The array you want to plot, with shape (#data, n_con).\n\
-    label: The classification label, with shape (#data).\n\
-    n_con: The dimension of each data point. When n_con >= 2, only plot the first two dimension. Otherwise will plot the hist.\n\
-    name & idx: the name and prompt of that this array comes from. Used only in plot title.\n\
-## Output ##\n\
-    No output. Directly show the plot.\n\
-")
+# print("\
+# ------ Func: scatter_data ------\n\
+# ## Input = (data, label, n_con, name, idx) ##\n\
+#     data: The array you want to plot, with shape (#data, n_con).\n\
+#     label: The classification label, with shape (#data).\n\
+#     n_con: The dimension of each data point. When n_con >= 2, only plot the first two dimension. Otherwise will plot the hist.\n\
+#     name & idx: the name and prompt of that this array comes from. Used only in plot title.\n\
+# ## Output ##\n\
+#     No output. Directly show the plot.\n\
+# ")
 def scatter_data(data, label, n_con, name, idx):
     sns.set(font_scale = 1.4)
     if n_con != 1:
