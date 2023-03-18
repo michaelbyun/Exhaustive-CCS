@@ -81,7 +81,26 @@ def loadHiddenStates(mdl, set_name, load_dir, promtpt_idx, location = "encoder",
 
     return [(u,v) for u,v in zip(hidden_states, labels)]
 
+def copy_permuted_generations(mdl, set_name, load_dir, promtpt_idx, location = "encoder", layer = -1, data_num = 1000, confusion = "normal", place = "last", scale = True, demean = True, mode = "minus", verbose = True, permutation_dict=None):
+    '''
+        Load generated hidden states, then save a permuted version of it.
+    '''
+
+    dir_list = getDirList(mdl, set_name, load_dir, data_num, confusion, place, promtpt_idx)
+    
+    for dir in dir_list:
+        df_1 = pd.read_csv(os.path.join(dir, "frame.csv"))
+        # if os.path.exists(os.path.join(dir, "test_sorted.csv")):
+        #     print("Sorted df already exists, skip for {}".format(dir))
+        #     continue
+        print("We are saving re-formated dataframes for {}".format(dir))
+        df_permuted_train = df_1.iloc[permutation_dict[set_name][0]]
+        df_permuted_train.to_csv(os.path.join(dir, "train_sorted.csv"))
+        df_permuted_test = df_1.iloc[permutation_dict[set_name][1]]
+        df_permuted_test.to_csv(os.path.join(dir, "test_sorted.csv"))
+
 def getPermutation(data_list, rate = 0.6):
+    np.random.seed(0)
     length = len(data_list[0][1])
     permutation = np.random.permutation(range(length)).reshape(-1)
     return [permutation[: int(length * rate)], permutation[int(length * rate):]]
@@ -114,6 +133,7 @@ def getDic(mdl_name, dataset_list, prefix = "normal", location="auto", layer=-1,
     prompt_dict = prompt_dict if prompt_dict is not None else {key: None for key in dataset_list}
     data_dict = {set_name: loadHiddenStates(mdl_name, set_name, load_dir, prompt_dict[set_name], location, layer, data_num = data_num, confusion = prefix, scale = scale, demean = demean, mode = mode, verbose = verbose) for set_name in dataset_list}
     permutation_dict = {set_name: getPermutation(data_dict[set_name]) for set_name in dataset_list}
+    _ = {set_name: copy_permuted_generations(mdl_name, set_name, load_dir, prompt_dict[set_name], location, layer, data_num = data_num, confusion = prefix, scale = scale, demean = demean, mode = mode, verbose = verbose, permutation_dict=permutation_dict) for set_name in dataset_list}
     return data_dict, permutation_dict
 
 # print("------ Func: get_zeros_acc ------\n\
