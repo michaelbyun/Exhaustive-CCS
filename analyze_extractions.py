@@ -18,8 +18,8 @@ def main():
 
     Grab the label column and compare to make sure they agree. i.e. labels == labels for both
     """
-    method = "LR"
-    dataset = "dbpedia-14"
+    method = "CCS"
+    dataset = "amazon-polarity"
 
     reorder_dict = {0:11, 1:4, 2:8, 3:1, 4:2, 5:7, 6:12, 7:0, 8:9, 9:5, 10:10, 11:6, 12:3}
 

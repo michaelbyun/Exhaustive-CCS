@@ -8,73 +8,76 @@ roberta_good_ds="imdb amazon-polarity ag-news dbpedia-14" # not actually sure if
 # model_names=(unifiedqa-t5-11b gpt-j-6B)
 # model_to_ds=(uqa_good_ds gptj_good_ds)
 # model_to_short=(uqa gptj)
-model_names=(roberta-large-mnli)
-model_to_ds=(roberta_good_ds)
-model_to_short=(roberta)
+# model_names=(roberta-large-mnli)
+# model_to_ds=(roberta_good_ds)
+# model_to_short=(roberta)
 
-test_on_trains=("" "--test_on_train")
-test_on_train_extensions=("" "/test_on_train")
+python extraction_main.py --model roberta-large-mnli --datasets $roberta_good_ds --method_list $methods --layer -5 --save_dir extraction_results_2 --save_states
+python extraction_main.py --model roberta-large-mnli --datasets $roberta_good_ds --method_list $methods --layer -9 --save_dir extraction_results_2 --save_states
 
-for i_test_on_train in 0 1; do
-    for i_model in 0; do
-        model=${model_names[$i_model]}
-        ds=${!model_to_ds[$i_model]}
-        short=${model_to_short[$i_model]}
-        test_on_train=${test_on_trains[$i_test_on_train]}
-        test_on_train_extension=${test_on_train_extensions[$i_test_on_train]}
-        for seed in {0..9}; do
-            # if seed == 0, save states
-            save_states=""
-            if [ $seed -eq 0 ]; then
-                save_states="--save_states" 
-            fi
+# test_on_trains=("" "--test_on_train")
+# test_on_train_extensions=("" "/test_on_train")
 
-            python extraction_main.py --model $model --datasets $ds --method_list $methods --seed $seed --save_dir extraction_results$test_on_train_extension $save_states $test_on_train
-        done
-    done
-done
+# for i_test_on_train in 0 1; do
+#     for i_model in 0; do
+#         model=${model_names[$i_model]}
+#         ds=${!model_to_ds[$i_model]}
+#         short=${model_to_short[$i_model]}
+#         test_on_train=${test_on_trains[$i_test_on_train]}
+#         test_on_train_extension=${test_on_train_extensions[$i_test_on_train]}
+#         for seed in {0..9}; do
+#             # if seed == 0, save states
+#             save_states=""
+#             if [ $seed -eq 0 ]; then
+#                 save_states="--save_states" 
+#             fi
 
-# Test different prefixes
+#             python extraction_main.py --model $model --datasets $ds --method_list $methods --seed $seed --save_dir extraction_results$test_on_train_extension $save_states $test_on_train
+#         done
+#     done
+# done
 
-methods="CCS LR Random"
-prefixes=("normal-dot" "normal-thatsright" "normal-mark")
-layers=(-1 -5 -9)
-save_dir_per_layer=("", "layer-5", "layer-9")
-for i_layer in 1 2; do
-    layer=${layers[$i_layer]}
-    save_dir=${save_dir_per_layer[$i_layer]}
-    for prefix in "${prefixes[@]}"; do
-        for i_model in 0; do
-            model=${model_names[$i_model]}
-            ds=${!model_to_ds[$i_model]}
-            short=${model_to_short[$i_model]}
-            for seed in {0..9}; do
-                # if seed == 0, save states
-                save_states=""
-                if [ $seed -eq 0 ]; then
-                    save_states="--save_states" 
-                fi
-                python extraction_main.py --model $model --datasets $ds --method_list $methods --seed $seed $save_states --prefix $prefix --layer $layer --save_dir extraction_results/$save_dir
-            done
-        done
-    done
-done
+# # Test different prefixes
 
-# RRCS
+# methods="CCS LR Random"
+# prefixes=("normal-dot" "normal-thatsright" "normal-mark")
+# layers=(-1 -5 -9)
+# save_dir_per_layer=("", "layer-5", "layer-9")
+# for i_layer in 1 2; do
+#     layer=${layers[$i_layer]}
+#     save_dir=${save_dir_per_layer[$i_layer]}
+#     for prefix in "${prefixes[@]}"; do
+#         for i_model in 0; do
+#             model=${model_names[$i_model]}
+#             ds=${!model_to_ds[$i_model]}
+#             short=${model_to_short[$i_model]}
+#             for seed in {0..9}; do
+#                 # if seed == 0, save states
+#                 save_states=""
+#                 if [ $seed -eq 0 ]; then
+#                     save_states="--save_states" 
+#                 fi
+#                 python extraction_main.py --model $model --datasets $ds --method_list $methods --seed $seed $save_states --prefix $prefix --layer $layer --save_dir extraction_results/$save_dir
+#             done
+#         done
+#     done
+# done
 
-RCCS_STRING=$(printf "RCCS%s " $(seq 0 19))
+# # RRCS
 
-for i_model in 0; do
-    model=${model_names[$i_model]}
-    ds=${!model_to_ds[$i_model]}
-    short=${model_to_short[$i_model]}
-    for seed in {0..4}; do
-        # if seed == 0, save states
-        save_states=""
-        if [ $seed -eq 0 ]; then
-            save_states="--save_states" 
-        fi
+# RCCS_STRING=$(printf "RCCS%s " $(seq 0 19))
 
-        python extraction_main.py --model $model --datasets $ds --method_list $RCCS_STRING --seed $seed --save_dir extraction_results/rccs $save_states
-    done
-done
+# for i_model in 0; do
+#     model=${model_names[$i_model]}
+#     ds=${!model_to_ds[$i_model]}
+#     short=${model_to_short[$i_model]}
+#     for seed in {0..4}; do
+#         # if seed == 0, save states
+#         save_states=""
+#         if [ $seed -eq 0 ]; then
+#             save_states="--save_states" 
+#         fi
+
+#         python extraction_main.py --model $model --datasets $ds --method_list $RCCS_STRING --seed $seed --save_dir extraction_results/rccs $save_states
+#     done
+# done

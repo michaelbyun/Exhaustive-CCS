@@ -55,7 +55,7 @@ def normalize(data, scale =True, demean = True):
     avgnorm = np.mean(norm)
     return data / avgnorm * np.sqrt(data.shape[1])
 
-def loadHiddenStates(mdl, set_name, load_dir, promtpt_idx, location = "encoder", layer = -1, data_num = 1000, confusion = "normal", place = "last", scale = True, demean = True, mode = "minus", verbose = True):
+def loadHiddenStates(mdl, set_name, load_dir, prompt_idx, location = "encoder", layer = -1, data_num = 1000, confusion = "normal", place = "last", scale = True, demean = True, mode = "minus", verbose = True):
     '''
         Load generated hidden states, return a dict where key is the dataset name and values is a list. Each tuple in the list is the (x,y) pair of one prompt.
         if mode == minus, then get h - h'
@@ -63,7 +63,7 @@ def loadHiddenStates(mdl, set_name, load_dir, promtpt_idx, location = "encoder",
         elif mode == 0 or 1, then get h or h'
     '''
 
-    dir_list = getDirList(mdl, set_name, load_dir, data_num, confusion, place, promtpt_idx)
+    dir_list = getDirList(mdl, set_name, load_dir, data_num, confusion, place, prompt_idx)
     append_list = ["_" + location + str(layer) for _ in dir_list]
     
     hidden_states = [
@@ -76,7 +76,7 @@ def loadHiddenStates(mdl, set_name, load_dir, promtpt_idx, location = "encoder",
 
     # normalize
     hidden_states = [normalize(w, scale, demean) for w in hidden_states]
-    if verbose:        
+    if verbose:
         print("{} prompts for {}, with shape {}".format(len(hidden_states), set_name, hidden_states[0].shape))
     labels = [np.array(pd.read_csv(os.path.join(w, "frame.csv"))["label"].to_list()) for w in dir_list]
 
@@ -88,7 +88,6 @@ def copy_permuted_generations(mdl, set_name, load_dir, prompt_idx, location = "e
     '''
 
     dir_list = getDirList(mdl, set_name, load_dir, data_num, confusion, place, prompt_idx)
-    print(f"dir_list: {dir_list}")
 
     # map the read dir (in generation_results) to the correct dir to save to (also in generation_results)
     # such that the data matches the extraction results
@@ -103,7 +102,7 @@ def copy_permuted_generations(mdl, set_name, load_dir, prompt_idx, location = "e
         #     continue
         save_dir = gen_dir_to_correct_dir[dir]
         # save_dir_idx = gen_dir_to_correct_dir_idx[dir]
-        print("We are saving re-formatted dataframes from {} to {}".format(dir, save_dir))
+        # print("We are saving re-formatted dataframes from {} to {}".format(dir, save_dir))
         df_permuted_train = df_1.iloc[permutation_dict[set_name][0]]
         df_permuted_train.to_csv(os.path.join(save_dir, f"train_sorted.csv"))
         # df_permuted_train.to_csv(os.path.join(save_dir, f"train_sorted_from_prompt{save_dir_idx}.csv"))
