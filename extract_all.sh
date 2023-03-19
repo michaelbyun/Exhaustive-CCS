@@ -12,8 +12,10 @@ roberta_good_ds="imdb amazon-polarity ag-news dbpedia-14" # not actually sure if
 # model_to_ds=(roberta_good_ds)
 # model_to_short=(roberta)
 
+python extraction_main.py --model roberta-large-mnli --datasets $roberta_good_ds --method_list $methods --layer -1 --save_dir extraction_results_2 --save_states
 python extraction_main.py --model roberta-large-mnli --datasets $roberta_good_ds --method_list $methods --layer -5 --save_dir extraction_results_2 --save_states
 python extraction_main.py --model roberta-large-mnli --datasets $roberta_good_ds --method_list $methods --layer -9 --save_dir extraction_results_2 --save_states
+python extraction_main.py --model roberta-large-mnli --datasets $roberta_good_ds --method_list $methods --layer -15 --save_dir extraction_results_2 --save_states
 
 # test_on_trains=("" "--test_on_train")
 # test_on_train_extensions=("" "/test_on_train")

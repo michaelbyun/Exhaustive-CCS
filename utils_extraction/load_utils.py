@@ -28,8 +28,8 @@ def set_load_dir(path):
 
 def getDirList(mdl, set_name, load_dir, data_num, confusion, place, prompt_idx):
     length = len(mdl)
-    filter = [w for w in os.listdir(load_dir) if (mdl == w[:length] and mdl + "_" in w and set_name + "_" in w and str(data_num) + "_" in w and confusion + "_" in w and place in w)]
-    if prompt_idx is not None:     
+    filter = [w for w in os.listdir(load_dir) if (mdl == w[:length] and mdl + "_" in w and set_name + "_" in w and str(data_num) + "_" in w and confusion + "_" in w)] # and place in w)]
+    if prompt_idx is not None:
         filter = [w for w in filter if int(w.split("_")[3][6:]) in prompt_idx]
     return [os.path.join(load_dir, w) for w in filter]
 
@@ -109,6 +109,30 @@ def copy_permuted_generations(mdl, set_name, load_dir, prompt_idx, location = "e
         df_permuted_test = df_1.iloc[permutation_dict[set_name][1]]
         df_permuted_test.to_csv(os.path.join(save_dir, f"test_sorted.csv"))
         # df_permuted_test.to_csv(os.path.join(save_dir, f"test_sorted_from_prompt{save_dir_idx}.csv"))
+
+    # now save permuted versions of the LOG PROBS
+    dir_list = [d.replace("generation_results", "generation_results/log_probs").replace("last", "_log_probs.csv") for d in dir_list]
+    sorted_list = sorted(dir_list, key=lambda s: int(re.search(r"prompt(\d+)", s).group(1)))
+    gen_dir_to_correct_dir = {s1: s2 for s1, s2 in zip(dir_list, sorted_list)}
+
+    if not os.path.exists("./generation_results/log_probs_test_sorted"):
+        os.makedirs("./generation_results/log_probs_test_sorted")
+    if not os.path.exists("./generation_results/log_probs_train_sorted"):
+        os.makedirs("./generation_results/log_probs_train_sorted")
+    
+    for dir in dir_list:
+        df_1 = pd.read_csv(dir)
+        # if os.path.exists(os.path.join(dir, "test_sorted.csv")):
+        #     print("Sorted df already exists, skip for {}".format(dir))
+        #     continue
+        save_dir_test = gen_dir_to_correct_dir[dir].replace("log_probs", "log_probs_test_sorted")
+        save_dir_train = save_dir_test.replace("log_probs_test_sorted", "log_probs_train_sorted")
+        # print("We are saving re-formatted dataframes from {} to {}".format(dir, save_dir))
+        df_permuted_train = df_1.iloc[permutation_dict[set_name][0]]
+        df_permuted_train.to_csv(save_dir_train)
+        df_permuted_test = df_1.iloc[permutation_dict[set_name][1]]
+        df_permuted_test.to_csv(save_dir_test)
+
 
 def getPermutation(data_list, rate = 0.6):
     np.random.seed(0)
