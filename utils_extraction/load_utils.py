@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import json
+import re
 
 ######## JSON Load ########
 json_dir = "./registration"
@@ -87,6 +88,9 @@ def copy_permuted_generations(mdl, set_name, load_dir, promtpt_idx, location = "
     '''
 
     dir_list = getDirList(mdl, set_name, load_dir, data_num, confusion, place, promtpt_idx)
+    print(f"dir_list: {dir_list}")
+    dir_list = sorted_strings = sorted(dir_list, key=lambda s: int(re.search(r"prompt(\d+)", s).group(1)))
+    print(f"sorted dir_list: {dir_list}")
     
     for dir in dir_list:
         df_1 = pd.read_csv(os.path.join(dir, "frame.csv"))
@@ -103,6 +107,7 @@ def getPermutation(data_list, rate = 0.6):
     np.random.seed(0)
     length = len(data_list[0][1])
     permutation = np.random.permutation(range(length)).reshape(-1)
+    # permutation = np.arange(length)
     return [permutation[: int(length * rate)], permutation[int(length * rate):]]
 
 
