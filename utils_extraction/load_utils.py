@@ -82,26 +82,34 @@ def loadHiddenStates(mdl, set_name, load_dir, promtpt_idx, location = "encoder",
 
     return [(u,v) for u,v in zip(hidden_states, labels)]
 
-def copy_permuted_generations(mdl, set_name, load_dir, promtpt_idx, location = "encoder", layer = -1, data_num = 1000, confusion = "normal", place = "last", scale = True, demean = True, mode = "minus", verbose = True, permutation_dict=None):
+def copy_permuted_generations(mdl, set_name, load_dir, prompt_idx, location = "encoder", layer = -1, data_num = 1000, confusion = "normal", place = "last", scale = True, demean = True, mode = "minus", verbose = True, permutation_dict=None):
     '''
         Load generated hidden states, then save a permuted version of it.
     '''
 
-    dir_list = getDirList(mdl, set_name, load_dir, data_num, confusion, place, promtpt_idx)
+    dir_list = getDirList(mdl, set_name, load_dir, data_num, confusion, place, prompt_idx)
     print(f"dir_list: {dir_list}")
-    dir_list = sorted_strings = sorted(dir_list, key=lambda s: int(re.search(r"prompt(\d+)", s).group(1)))
-    print(f"sorted dir_list: {dir_list}")
+
+    # map the read dir (in generation_results) to the correct dir to save to (also in generation_results)
+    # such that the data matches the extraction results
+    sorted_list = sorted(dir_list, key=lambda s: int(re.search(r"prompt(\d+)", s).group(1)))
+    gen_dir_to_correct_dir = {s1: s2 for s1, s2 in zip(dir_list, sorted_list)}
+    # gen_dir_to_correct_dir_idx = {k:v for v,k in enumerate(dir_list)}
     
     for dir in dir_list:
         df_1 = pd.read_csv(os.path.join(dir, "frame.csv"))
         # if os.path.exists(os.path.join(dir, "test_sorted.csv")):
         #     print("Sorted df already exists, skip for {}".format(dir))
         #     continue
-        print("We are saving re-formated dataframes for {}".format(dir))
+        save_dir = gen_dir_to_correct_dir[dir]
+        # save_dir_idx = gen_dir_to_correct_dir_idx[dir]
+        print("We are saving re-formatted dataframes from {} to {}".format(dir, save_dir))
         df_permuted_train = df_1.iloc[permutation_dict[set_name][0]]
-        df_permuted_train.to_csv(os.path.join(dir, "train_sorted.csv"))
+        df_permuted_train.to_csv(os.path.join(save_dir, f"train_sorted.csv"))
+        # df_permuted_train.to_csv(os.path.join(save_dir, f"train_sorted_from_prompt{save_dir_idx}.csv"))
         df_permuted_test = df_1.iloc[permutation_dict[set_name][1]]
-        df_permuted_test.to_csv(os.path.join(dir, "test_sorted.csv"))
+        df_permuted_test.to_csv(os.path.join(save_dir, f"test_sorted.csv"))
+        # df_permuted_test.to_csv(os.path.join(save_dir, f"test_sorted_from_prompt{save_dir_idx}.csv"))
 
 def getPermutation(data_list, rate = 0.6):
     np.random.seed(0)
