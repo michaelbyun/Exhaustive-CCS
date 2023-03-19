@@ -5,3 +5,4 @@ __pycache__
 *.zip
 extraction_results/
 thu_morning.sh
+.DS_Store
