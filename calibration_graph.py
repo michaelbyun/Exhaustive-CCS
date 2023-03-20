@@ -3,13 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 file_name = "imdb-test-consolidated.xlsx"
-predictions = 'CCS*zero-shot' # 'prob CCS output'
+sheet_name = "Sheet2"
+predictions = 'prob CCS output' # 'prob CCS output'
 outcomes = 'GT label'
 prompt = 0
 n_buckets = 10
 save_dir = "./calibration_graphs/"
 
-data = pd.read_excel(file_name, engine='openpyxl')
+data = pd.read_excel(file_name, engine='openpyxl', sheet_name=sheet_name)
 
 def calibration_graph(data, n_buckets=10, prompt= "all"):
     if prompt != "all":
