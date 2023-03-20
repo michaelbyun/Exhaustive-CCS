@@ -1,3 +1,5 @@
+### The below is the original readme from Fabien Roger's version of CCS, and has not been updated for this fork.
+
 # Discovering Latent Knowledge Without Supervision
 
 This is a lighty edited version of the original [Discovering Latent Knowledge Without Supervision](https://arxiv.org/pdf/2212.03827.pdf) code, which is the zip file linked in the [Github Repo of the paper](https://github.com/collin-burns/discovering_latent_knowledge/).
