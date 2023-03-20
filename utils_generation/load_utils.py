@@ -103,7 +103,7 @@ def get_balanced_num(total_num, lis_len):
     return [tmp if i < lis_len - more else tmp + 1 for i in range(lis_len)]
 
 def getLoadName(set_name):
-    if set_name in ["imdb", "amazon-polarity", "ag-news", "dbpedia-14", "piqa"]:
+    if set_name in ["imdb", "amazon-polarity", "ag-news", "dbpedia-14", "piqa", "truthful-qa"]:
         return [set_name.replace("-", "_")]
     elif set_name in ["copa", "rte", "boolq"]:
         return ["super_glue", set_name.replace("-", "_")]
@@ -122,7 +122,7 @@ def loadFromDatasets(set_name, cache_dir, max_num):
     else:
         raw_set = load_dataset(*getLoadName(set_name), data_dir="./datasets/rawdata")
 
-    if set_name in ["imdb", "amazon-polarity", "ag-news", "dbpedia-14"]:
+    if set_name in ["imdb", "amazon-polarity", "ag-news", "dbpedia-14", "truthful-qa"]: #??
         token_list = ["test", "train"]
     elif set_name in ["copa", "rte", "boolq", "piqa", "qnli"]:
         token_list = ["validation", "train"]

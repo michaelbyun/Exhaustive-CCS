@@ -19,6 +19,7 @@ label_dict = {
     "qnli": ["yes", "no"],  # represent whether entail
     "piqa": ["solution 1", "solution 2"],
     "story-cloze": ["choice 1", "choice 2"],
+    "truthful-qa": ["choice 1", "choice 2"],
 }
 
 
@@ -83,6 +84,16 @@ prompt_dict = {
     "rte": [
         ["{}\nQuestion: Does this imply that \"{}\", yes or no?",
             ["premise", "hypothesis"]],
+    ],
+    "truthful-qa": [
+        ["{} \nChoice 1: {}. Choice 2: {}. Between choice 1 and choice 2, the true answer is ", [
+            "content", "0", "1"]],
+        ["{} \nChoice 1: {}. Choice 2: {}. Between choice 1 and choice 2, the correct answer is ", [
+            "content", "0", "1"]],
+        ["{} \nChoice 1: {}. Choice 2: {}. Between choice 1 and choice 2, what is the correct answer?", [
+            "content", "0", "1"]],
+        ["{} \nWhich is the correct answer to this question, choice 1: {}, or choice 2: {}?", [
+            "content", "0", "1"]],
     ],
     
 }
@@ -265,7 +276,7 @@ class MyPrompts():
         ]
         self.label_dict = label_dict[set_name]
 
-        if set_name in ["ag-news", "dbpedia-14"]:
+        if set_name in ["ag-news", "dbpedia-14", "truthful-qa"]: #??
             self.nomodule = True
             self.module = None
         else:
@@ -280,7 +291,7 @@ class MyPrompts():
             num = 0
             if set_name in prompt_dict.keys():
                 num += len(prompt_dict[set_name])
-            if set_name not in ["ag-news", "dbpedia-14"]:
+            if set_name not in ["ag-news", "dbpedia-14", "truthful-qa"]: #??
                 num += len(DatasetTemplates(*getLoadName(set_name)
                                             ).all_template_names)
             if set_name == "copa":
@@ -320,6 +331,10 @@ class MyPrompts():
             idx = prompt_idx - (self.getPromptsNum() - len(self.prompt_dict))
             template, token = self.prompt_dict[idx][0], self.prompt_dict[idx][1]
             formatter = []
+
+            if self.set_name == "truthful-qa":
+                self.label_dict = None #??
+
             for w in token:
                 if "e.g." in w: # format is "e.g.0_sth"
                     idx, typ = int(w.split("_")[0][-1]), w.split("_")[1]
@@ -330,13 +345,13 @@ class MyPrompts():
                     else:     # "e.g.0_text", take qaexamples[0].loc[idx]
                         formatter.append(qaexamples[0].loc[idx][typ])
                 else:
-                    formatter.append(self.label_dict[candidate[int(w)]] if w in ["0", "1"] else tmp[w])
+                    formatter.append(self.label_dict[candidate[int(w)]] if w in ["0", "1"] else tmp[w]) #??
             # token = [w if w not in ["0", "1"]
             #          else candidate[int(w)] for w in token]
             # formatter = [tmp[w] if type(
             #     w) != int else self.label_dict[w] for w in token]
             question = template.format(*formatter)
-            if self.set_name not in ["ag_news", "dbpedia_14"]:
+            if self.set_name not in ["ag_news", "dbpedia_14", "truthful_qa"]:
                 return question, [self.label_dict[w] for w in candidate]
             else:
                 return question, ["choice 1", "choice 2"]
@@ -428,8 +443,16 @@ def constructPrompt(set_name, frame, prompt_idx, mdl_name, tokenizer, max_num, c
     }
 
 	# This is always in range(#num_label)
-    labels = frame["label"].to_list() if set_name != "story-cloze" else [w -
-                            1 for w in frame["answer_right_ending"].to_list()]
+    if set_name != "story-cloze" and set_name != "truthful_qa":
+        labels = frame["label"].to_list()
+    elif set_name == "story-cloze":
+        labels = [w - 1 for w in frame["answer_right_ending"].to_list()]
+    elif set_name == "truthful_qa":
+        labels = frame["best_answer"].to_list()
+        incorrect_answers = frame["incorrect_answers"].to_list()
+    else:
+        raise ValueError("Unknown set name")
+    
     label_num = len(set(labels))
 
     # For possibly used examples, we take from the frame. We try to avoid using the same examples, and take at the end of the frame. We take the last 5 examples and select the one with least length.
@@ -448,6 +471,8 @@ def constructPrompt(set_name, frame, prompt_idx, mdl_name, tokenizer, max_num, c
         if len(result["null"]) >= max_num:
             break
 
+        if set_name == "truthful_qa":
+            pass #??
         label, selection = genCandidate(labels[idx], label_num)
 
         # Get the question and Answer List
